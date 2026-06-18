@@ -1,0 +1,2023 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMSHI CAFE | Premium QR Ordering</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Local Offline QR Generator Library (QRious) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&display=swap" rel="stylesheet">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#050608">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=180&auto=format&fit=crop&q=80">
+    <link rel="icon" type="image/png" href="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=180&auto=format&fit=crop&q=80">
+    <!-- Inline Dynamic PWA Manifest -->
+    <link rel="manifest" id="pwa-manifest">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            DEFAULT: '#C5A880',
+                            light: '#E5D5C0',
+                            dark: '#9A7D56',
+                        },
+                        dark: {
+                            bg: '#050608',
+                            card: '#0F1115',
+                            accent: '#181B22'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050608;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #C5A880;
+            border-radius: 3px;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* Parallax Background */
+        @keyframes kenburns {
+            0% { transform: scale(1.0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1.0); }
+        }
+        .animate-kenburns {
+            animation: kenburns 35s ease-in-out infinite;
+        }
+        
+        /* Floating gold dust particles */
+        @keyframes float-particle {
+            0% { transform: translateY(100vh) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.7; }
+            90% { opacity: 0.7; }
+            100% { transform: translateY(-10vh) translateX(80px) rotate(360deg); opacity: 0; }
+        }
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #C5A880;
+            border-radius: 50%;
+            pointer-events: none;
+            box-shadow: 0 0 8px #C5A880, 0 0 12px #E5D5C0;
+            animation: float-particle linear infinite;
+        }
+
+        /* Ambient falling food emojis behind text card */
+        @keyframes fall-down {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
+                opacity: 0;
+            }
+            15% {
+                opacity: 0.25;
+            }
+            90% {
+                opacity: 0.25;
+            }
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* 3D Gilded Metallic Golden Text Effect */
+        .text-3d-gold {
+            font-family: 'Playfair Display', serif;
+            text-shadow: 
+                0 1px 0 #9A7D56,
+                0 2px 0 #8c714e,
+                0 3px 0 #7e6546,
+                0 4px 0 #70593e,
+                0 5px 0 #624d36,
+                0 0 5px rgba(0,0,0,0.5),
+                0 10px 10px rgba(0,0,0,0.3),
+                0 0 25px rgba(197,168,128,0.35);
+        }
+
+        /* 3D Perspective Tilt Hover Effect */
+        .card-3d {
+            perspective: 1000px;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.6s;
+        }
+        .card-3d:hover {
+            transform: translateY(-10px) rotateX(5deg) rotateY(-2deg);
+            box-shadow: 0 25px 45px rgba(197,168,128,0.18), 0 0 15px rgba(197,168,128,0.08);
+        }
+
+        /* Chai Cup Steam Animation */
+        @keyframes steam-rise {
+            0% { transform: translateY(0) scaleX(1); opacity: 0; }
+            15% { opacity: 0.6; }
+            50% { transform: translateY(-15px) scaleX(1.4) skewX(-5deg); opacity: 0.3; }
+            100% { transform: translateY(-35px) scaleX(1.8) skewX(5deg); opacity: 0; }
+        }
+        .steam-line-1 {
+            animation: steam-rise 4.5s ease-in-out infinite;
+            transform-origin: bottom center;
+        }
+        .steam-line-2 {
+            animation: steam-rise 3.8s ease-in-out infinite;
+            animation-delay: 1.2s;
+            transform-origin: bottom center;
+        }
+        .steam-line-3 {
+            animation: steam-rise 5s ease-in-out infinite;
+            animation-delay: 2.5s;
+            transform-origin: bottom center;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-dark-bg text-gray-200 font-sans antialiased min-h-screen">
+
+    <!-- TOP HEADER -->
+    <header class="fixed top-0 left-0 right-0 z-40 bg-[#050608]/75 backdrop-blur-xl border-b border-gold/10 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <!-- Brand Logo Entry Point -->
+            <div class="flex items-center gap-3 select-none cursor-pointer" onclick="promptAdminLogin()">
+                <div id="header-logo-container">
+                    <span id="text-logo" class="font-serif text-lg md:text-xl font-bold tracking-widest text-gold" title="Click to login as admin">
+                        AMSHI CAFE
+                    </span>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <!-- Table Number Badge (Customer QR Scan) -->
+                <div id="table-badge" class="hidden items-center gap-2 bg-gold/10 border border-gold/30 px-3 py-1 rounded-full text-xs font-semibold text-gold">
+                    <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>Table No : <span id="table-number-val">-</span></span>
+                </div>
+                
+                <!-- Admin Lock Icon -->
+                <button id="admin-lock-btn" onclick="promptAdminLogin()" class="hidden bg-dark-accent border border-gray-700 hover:border-gold p-2 rounded-lg text-gray-400 hover:text-gold transition-all duration-300 animate-pulse" title="Admin Login">
+                    <i class="fa-solid fa-lock text-sm"></i>
+                </button>
+
+                <!-- Admin Action Button -->
+                <button id="admin-panel-btn" onclick="toggleAdminView()" class="hidden bg-gold text-dark-bg font-bold px-3 py-1.5 rounded-lg text-xs tracking-wide transition-all duration-300 shadow-lg shadow-gold/10">
+                    <i class="fa-solid fa-screwdriver-wrench mr-1"></i> Admin Panel
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- CUSTOMER VIEW -->
+    <div id="customer-view" class="pt-16 pb-24">
+        <!-- HERO SECTION -->
+        <section class="relative min-h-[92vh] flex items-center justify-center overflow-hidden">
+            <!-- Animated Background Image Container -->
+            <div class="absolute inset-0 z-0">
+                <div id="hero-background" class="w-full h-full bg-cover bg-center animate-kenburns" style="background-image: linear-gradient(rgba(5, 6, 8, 0.75), rgba(5, 6, 8, 0.95)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&auto=format&fit=crop&q=80');"></div>
+            </div>
+            
+            <div class="absolute inset-0 bg-gradient-to-t from-dark-bg via-transparent to-transparent z-10"></div>
+            
+            <!-- AMBIENT FLOATING GOLD PARTICLES -->
+            <div class="absolute inset-0 pointer-events-none z-15 overflow-hidden">
+                <div class="particle" style="left: 10%; animation-delay: 0s; animation-duration: 16s;"></div>
+                <div class="particle" style="left: 25%; animation-delay: 4s; animation-duration: 22s;"></div>
+                <div class="particle" style="left: 45%; animation-delay: 2s; animation-duration: 18s;"></div>
+                <div class="particle" style="left: 65%; animation-delay: 8s; animation-duration: 26s;"></div>
+                <div class="particle" style="left: 80%; animation-delay: 5s; animation-duration: 15s;"></div>
+                <div class="particle" style="left: 95%; animation-delay: 11s; animation-duration: 20s;"></div>
+            </div>
+            
+            <!-- FLOATING FOOD EMOJIS BACKGROUND LAYER (Falls behind the central glass container) -->
+            <div id="falling-emojis-bg" class="absolute inset-0 z-10 pointer-events-none overflow-hidden select-none"></div>
+            
+            <!-- Hero Content Container -->
+            <div class="relative z-20 text-center px-6 py-10 max-w-4xl mx-auto space-y-6 flex flex-col items-center justify-center fade-in bg-black/35 backdrop-blur-md rounded-3xl border border-gold/15 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+                
+                <span class="text-gold uppercase tracking-[0.3em] font-semibold text-xs md:text-sm block">A Premium Culinary Space</span>
+                
+                <!-- LUXURIOUS 3D METALLIC GOLD TYPOGRAPHY -->
+                <div class="space-y-1 select-none py-2">
+                    <h1 class="text-6xl md:text-8xl text-white font-extrabold leading-none tracking-tight text-3d-gold">
+                        AMSHI
+                    </h1>
+                    <div class="flex items-center justify-center gap-4">
+                        <div class="w-16 h-[1px] bg-gradient-to-r from-transparent to-gold"></div>
+                        <h2 class="font-serif text-3xl md:text-5xl text-gold font-light italic leading-none tracking-widest">
+                            Cafe
+                        </h2>
+                        <div class="w-16 h-[1px] bg-gradient-to-l from-transparent to-gold"></div>
+                    </div>
+                </div>
+
+                <!-- REALISTIC STREAMING CHAI CUP -->
+                <div class="w-24 h-24 mx-auto select-none flex items-end justify-center relative py-2">
+                    <svg viewBox="0 0 100 80" class="w-16 h-16 drop-shadow-[0_0_8px_rgba(197,168,128,0.25)]">
+                        <!-- Smoke/Steam Lines -->
+                        <g stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.6">
+                            <path d="M42 35 Q38 25 44 15 T38 -5" class="steam-line-1"/>
+                            <path d="M50 35 Q46 22 52 10 T46 -10" class="steam-line-2"/>
+                            <path d="M58 35 Q54 28 60 18 T54 -2" class="steam-line-3"/>
+                        </g>
+                        <!-- Traditional Terracotta Kulhad/Cup -->
+                        <path d="M30 40 L35 70 C36 74, 64 74, 65 70 L70 40 Z" fill="#8d5538"/>
+                        <!-- Decorative Gold Ring on Cup -->
+                        <rect x="32" y="48" width="36" height="4" fill="#C5A880"/>
+                        <!-- Cup handle -->
+                        <path d="M70 45 Q80 50 70 58" fill="none" stroke="#8d5538" stroke-width="4" stroke-linecap="round"/>
+                        <!-- Tea surface -->
+                        <ellipse cx="50" cy="40" rx="20" ry="4" fill="#5c2e16"/>
+                    </svg>
+                </div>
+
+                <p class="text-gray-300 text-xs md:text-sm max-w-xl mx-auto leading-relaxed">
+                    Indulge in our exquisite gourmet menus. Select your favorites, customize your basket, and send your table order directly to our kitchen.
+                </p>
+                <div class="pt-2">
+                    <a href="#menu-section" class="bg-gradient-to-r from-gold to-gold-dark hover:from-gold-dark hover:to-gold text-dark-bg font-extrabold px-10 py-4 rounded-full shadow-lg shadow-gold/20 hover:shadow-gold/40 hover:scale-105 transition-all duration-300 inline-block text-xs uppercase tracking-widest border border-gold-light/20 active:scale-95">
+                        Explore Our Menu <i class="fa-solid fa-arrow-down ml-2 animate-bounce"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- MENU AND FILTERING -->
+        <main id="menu-section" class="max-w-7xl mx-auto px-4 py-12 space-y-12">
+            <!-- Live Search Bar -->
+            <div class="relative max-w-xl mx-auto">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                    <i class="fa-solid fa-magnifying-glass text-gold/80"></i>
+                </div>
+                <input 
+                    type="text" 
+                    id="search-input" 
+                    placeholder="Search momos, pizza, noodles, mojito, or dessert..." 
+                    class="w-full bg-dark-card border border-gold/15 hover:border-gold/40 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30 text-white rounded-2xl py-4 pl-12 pr-4 transition-all duration-300 placeholder-gray-500 text-sm shadow-[0_0_20px_rgba(0,0,0,0.6)]"
+                    oninput="filterProducts()"
+                >
+            </div>
+
+            <!-- Scrollable Categories -->
+            <div class="flex items-center gap-3 overflow-x-auto py-2 hide-scrollbar scroll-smooth">
+                <button onclick="selectCategory('All')" class="category-tab active flex-shrink-0 bg-gold text-dark-bg font-bold px-6 py-2.5 rounded-full text-xs tracking-wider uppercase transition-all duration-300 shadow-md">
+                    All Items
+                </button>
+                <div id="category-tabs" class="flex items-center gap-3"></div>
+            </div>
+
+            <!-- Menu Cards Grid -->
+            <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+            
+            <div id="empty-search" class="hidden text-center py-16 space-y-4">
+                <i class="fa-regular fa-face-frown text-gold text-5xl"></i>
+                <h3 class="text-xl font-medium text-white">No dishes matched your search</h3>
+            </div>
+        </main>
+    </div>
+
+    <!-- MAIN ADMIN PANEL -->
+    <div id="admin-view" class="hidden pt-24 pb-24 max-w-7xl mx-auto px-4 space-y-8 animate-fade-in">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between border-b border-gold/20 pb-6 gap-4">
+            <div>
+                <span class="text-xs text-gold font-bold uppercase tracking-widest flex items-center gap-2">
+                    <span id="cloud-status-indicator" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 
+                    <span id="cloud-status-text">Master Menu Sync Connected</span>
+                </span>
+                <h1 class="font-serif text-3xl md:text-4xl text-white font-bold mt-1">AMSHI CAFE Admin</h1>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="openProductModal()" class="bg-gold hover:bg-gold-dark text-dark-bg font-bold px-4 py-2.5 rounded-lg text-sm transition-all flex items-center gap-2 active:scale-95">
+                    <i class="fa-solid fa-plus"></i> Add New Dish
+                </button>
+                <button onclick="adminLogout()" class="bg-red-950/40 border border-red-500/30 hover:bg-red-500 hover:text-white text-red-400 px-4 py-2.5 rounded-lg text-sm transition-all active:scale-95">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+                <button onclick="toggleAdminView()" class="bg-dark-accent border border-gray-700 hover:border-gold text-gray-300 hover:text-gold px-4 py-2.5 rounded-lg text-sm transition-all active:scale-95">
+                    Exit Panel
+                </button>
+            </div>
+        </div>
+
+        <!-- BRANDING & RESTAURANT CONTROL DASHBOARD -->
+        <div class="bg-dark-card border border-gold/15 p-6 rounded-2xl space-y-6 shadow-xl shadow-black/40">
+            <h3 class="font-serif text-lg text-gold flex items-center gap-2">
+                <i class="fa-solid fa-sliders"></i> Restaurant &amp; System Control Dashboard
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Setting: WhatsApp Order Number -->
+                <div class="space-y-1.5">
+                    <label class="text-xs text-gold uppercase tracking-wider font-semibold block">WhatsApp Order Number</label>
+                    <input type="text" id="admin-wa-number" value="6299386787" oninput="onSettingsChanged()" class="w-full bg-dark-accent border border-gray-700 focus:border-gold focus:outline-none rounded-lg p-3 text-sm text-white">
+                </div>
+                
+                <!-- Setting: QR Table Count -->
+                <div class="space-y-1.5">
+                    <label class="text-xs text-gold uppercase tracking-wider font-semibold block">QR Table Count</label>
+                    <input type="number" id="admin-qr-count" value="10" min="1" max="50" oninput="onSettingsChanged()" class="w-full bg-dark-accent border border-gray-700 focus:border-gold focus:outline-none rounded-lg p-3 text-sm text-white">
+                </div>
+
+                <!-- Setting: Currency Symbol -->
+                <div class="space-y-1.5">
+                    <label class="text-xs text-gold uppercase tracking-wider font-semibold block">Currency Symbol</label>
+                    <input type="text" id="admin-currency" value="₹" oninput="onSettingsChanged()" class="w-full bg-dark-accent border border-gray-700 focus:border-gold focus:outline-none rounded-lg p-3 text-sm text-white">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Setting: Tax Percentage -->
+                <div class="space-y-1.5">
+                    <label class="text-xs text-gold uppercase tracking-wider font-semibold block">Tax Percentage (%)</label>
+                    <input type="number" id="admin-tax" value="5" min="0" max="100" step="0.1" oninput="onSettingsChanged()" class="w-full bg-dark-accent border border-gray-700 focus:border-gold focus:outline-none rounded-lg p-3 text-sm text-white">
+                </div>
+
+                <!-- Setting: Delivery Charge -->
+                <div class="space-y-1.5">
+                    <label class="text-xs text-gold uppercase tracking-wider font-semibold block">Delivery / Service Charge</label>
+                    <input type="number" id="admin-delivery" value="0" min="0" oninput="onSettingsChanged()" class="w-full bg-dark-accent border border-gray-700 focus:border-gold focus:outline-none rounded-lg p-3 text-sm text-white">
+                </div>
+
+                <!-- Setting: Banner Image URL -->
+                <div class="space-y-1.5">
+                    <label class="text-xs text-gold uppercase tracking-wider font-semibold block">Hero Banner Image URL</label>
+                    <input type="url" id="admin-banner-url" placeholder="https://images.unsplash.com/..." oninput="onSettingsChanged()" class="w-full bg-dark-accent border border-gray-700 focus:border-gold focus:outline-none rounded-lg p-3 text-sm text-white">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-gray-800 pt-6">
+                <!-- Setting: Logo URL -->
+                <div class="space-y-1.5">
+                    <label class="text-xs text-gold uppercase tracking-wider font-semibold block">Option A: Logo Image URL</label>
+                    <input type="url" id="admin-logo-url-input" placeholder="e.g. https://i.ibb.co/logo.png" oninput="onSettingsChanged()" class="w-full bg-dark-accent border border-gray-700 focus:border-gold focus:outline-none rounded-lg p-3 text-sm text-white">
+                </div>
+                <!-- Setting: File Logo Upload -->
+                <div class="space-y-1.5">
+                    <label class="text-xs text-gold uppercase tracking-wider font-semibold block">Option B: Upload Brand Logo File</label>
+                    <input type="file" id="admin-logo-file" accept="image/*" onchange="handleLogoUpload(event)" class="w-full bg-dark-accent border border-gray-700 focus:border-gold rounded-lg p-2.5 text-xs text-white file:bg-gold file:text-dark-bg file:border-none file:px-3 file:py-1 file:rounded-md file:text-[10px] file:font-bold file:cursor-pointer">
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-4 border-t border-gray-800 flex-wrap gap-3">
+                <button onclick="removeLogo()" class="bg-red-950/40 border border-red-500/30 hover:bg-red-500 hover:text-white text-red-400 text-xs px-4 py-2.5 rounded-lg transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-trash-can"></i> Revert to Text Logo
+                </button>
+                <button onclick="resetSystemToDefault()" class="bg-orange-950/40 border border-orange-500/30 hover:bg-orange-500 hover:text-white text-orange-400 text-xs px-4 py-2.5 rounded-lg transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-arrows-rotate"></i> Reset All Settings &amp; Menu
+                </button>
+            </div>
+        </div>
+
+        <div class="flex border-b border-gray-800 mb-8">
+            <button onclick="switchAdminTab('menu')" id="btn-admin-menu" class="admin-tab active border-b-2 border-gold text-gold font-semibold px-6 py-3 text-sm tracking-wide">
+                Menu Management
+            </button>
+            <button onclick="switchAdminTab('qr')" id="btn-admin-qr" class="admin-tab border-b-2 border-transparent text-gray-400 hover:text-white px-6 py-3 text-sm tracking-wide transition-all">
+                Table QR Codes
+            </button>
+        </div>
+
+        <!-- Admin: Menu Management -->
+        <div id="admin-menu-tab" class="space-y-6">
+            <div class="overflow-x-auto bg-dark-card rounded-2xl border border-gold/10 shadow-xl">
+                <table class="w-full text-left border-collapse min-w-[700px]">
+                    <thead>
+                        <tr class="border-b border-gold/10 bg-dark-accent text-gold text-xs uppercase tracking-wider">
+                            <th class="p-4">Dish Details</th>
+                            <th class="p-4">Category</th>
+                            <th class="p-4">Status</th>
+                            <th class="p-4 text-right">Price</th>
+                            <th class="p-4 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-table-body" class="divide-y divide-gray-800 text-sm"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Admin: Table QRs -->
+        <div id="admin-qr-tab" class="hidden space-y-6">
+            <div class="bg-dark-accent border border-gold/10 p-5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h3 class="font-serif text-lg text-gold mb-2"><i class="fa-solid fa-circle-info mr-2"></i>Dynamic QR System</h3>
+                    <p class="text-sm text-gray-400">
+                        Any changes to the menu, prices, or branding are automatically saved in real time and updated in the QR codes.
+                    </p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="printAllQRs()" class="bg-gold text-dark-bg font-extrabold px-4 py-2.5 rounded-lg text-xs tracking-wide uppercase shadow-lg shadow-gold/10 hover:bg-gold-light transition-all">
+                        <i class="fa-solid fa-print"></i> Bulk Print QRs
+                    </button>
+                    <button onclick="downloadAllQRs()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-4 py-2.5 rounded-lg text-xs tracking-wide uppercase shadow-lg transition-all">
+                        <i class="fa-solid fa-cloud-arrow-down"></i> Bulk Download QRs
+                    </button>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="qr-codes-grid"></div>
+        </div>
+    </div>
+
+    <!-- PREMIUM FOOTER -->
+    <footer class="bg-dark-card border-t border-gold/15 py-12 select-none">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-6">
+            <h2 class="font-serif text-2xl text-gold tracking-[0.3em] font-bold">AMSHI CAFE</h2>
+            <div class="w-12 h-[1px] bg-gold/30 mx-auto"></div>
+            <p class="text-xs text-gray-500 max-w-md mx-auto leading-relaxed">
+                Experience premium QR dining at AMSHI CAFE. All rights reserved &copy; 2026.
+            </p>
+            <div class="flex justify-center gap-6 text-gray-500 text-sm">
+                <span class="hover:text-gold transition-colors cursor-pointer"><i class="fa-brands fa-instagram"></i></span>
+                <span class="hover:text-gold transition-colors cursor-pointer"><i class="fa-brands fa-facebook"></i></span>
+                <span class="hover:text-gold transition-colors cursor-pointer"><i class="fa-brands fa-twitter"></i></span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- FLOATING CART BAR -->
+    <div id="floating-cart" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 w-[92%] max-w-md bg-gradient-to-r from-gold to-gold-dark text-dark-bg p-4 rounded-2xl shadow-[0_10px_30px_rgba(197,168,128,0.3)] flex items-center justify-between transform scale-0 transition-all duration-300">
+        <div class="flex items-center gap-3">
+            <div class="bg-dark-bg text-gold w-10 h-10 rounded-xl flex items-center justify-center relative shadow-md">
+                <i class="fa-solid fa-basket-shopping"></i>
+                <span id="cart-badge-count" class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
+            </div>
+            <div>
+                <p class="text-xs uppercase tracking-wider font-semibold text-dark-bg/80">Your Basket</p>
+                <p class="font-bold text-lg leading-none" id="cart-float-total">₹0</p>
+            </div>
+        </div>
+        <button onclick="toggleCartDrawer(true)" class="bg-dark-bg hover:bg-[#020203] text-white font-bold text-xs uppercase tracking-widest px-5 py-3 rounded-xl transition-all shadow-md active:scale-95">
+            View Order <i class="fa-solid fa-chevron-right ml-1 text-gold"></i>
+        </button>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 bg-gold text-dark-bg px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-xs font-bold uppercase tracking-wider translate-y-12 opacity-0 pointer-events-none transition-all duration-300 border border-gold-light/20">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-sm"></i>
+        <span id="toast-msg">Success Message</span>
+    </div>
+
+    <!-- CART SIDE DRAWER -->
+    <div id="cart-drawer-overlay" class="fixed inset-0 bg-dark-bg/85 backdrop-blur-md z-50 opacity-0 pointer-events-none transition-all duration-300" onclick="toggleCartDrawer(false)"></div>
+    <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-dark-card/90 backdrop-blur-xl border-l border-gold/15 z-50 transform translate-x-full transition-all duration-300 flex flex-col shadow-2xl">
+        <div class="p-5 border-b border-gold/10 flex items-center justify-between bg-dark-accent/60">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-utensils text-gold text-xl"></i>
+                <h3 class="font-serif text-xl font-bold text-white">Your Order</h3>
+            </div>
+            <button onclick="toggleCartDrawer(false)" class="text-gray-400 hover:text-white text-lg p-2 rounded-lg transition-all">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="flex-grow overflow-y-auto p-5 space-y-4" id="cart-items-container"></div>
+
+        <div class="p-5 border-t border-gold/10 bg-dark-accent/80 space-y-4">
+            <div class="space-y-2">
+                <div class="flex justify-between text-xs text-gray-400">
+                    <span>Subtotal</span>
+                    <span id="cart-base-total">₹0</span>
+                </div>
+                <div class="flex justify-between text-xs text-gray-400">
+                    <span>Tax</span>
+                    <span id="cart-tax-total">₹0</span>
+                </div>
+                <div id="cart-delivery-row" class="flex justify-between text-xs text-gray-400 hidden">
+                    <span>Delivery Charge</span>
+                    <span id="cart-delivery-total">₹0</span>
+                </div>
+                <div class="flex justify-between font-bold text-white text-lg">
+                    <span>Order Total</span>
+                    <span id="cart-grand-total" class="text-gold">₹0</span>
+                </div>
+            </div>
+
+            <button onclick="sendOrderViaWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-3 text-sm tracking-wider uppercase shadow-lg shadow-emerald-950/30 active:scale-95">
+                <i class="fa-brands fa-whatsapp text-lg"></i> Send Order on WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <!-- PRODUCT MODAL -->
+    <div id="product-modal-overlay" class="fixed inset-0 bg-dark-bg/80 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-all duration-300 flex items-center justify-center p-4">
+        <div id="product-modal" class="bg-dark-card border border-gold/20 w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl transform scale-95 transition-all duration-300">
+            <div class="p-5 border-b border-gold/10 flex items-center justify-between bg-dark-accent">
+                <h3 id="modal-title" class="font-serif text-lg text-gold font-bold">Add Gourmet Dish</h3>
+                <button onclick="closeProductModal()" class="text-gray-400 hover:text-white p-2">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <form id="product-form" onsubmit="handleProductFormSubmit(event)" class="p-5 space-y-4">
+                <input type="hidden" id="form-product-id">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1 block">
+                        <label class="text-xs text-gold uppercase tracking-wider font-semibold block">Dish Name</label>
+                        <input type="text" id="form-product-name" required class="w-full bg-dark-accent border border-gray-700 focus:border-gold focus:outline-none rounded-lg p-2.5 text-sm text-white">
+                    </div>
+                    <div class="space-y-1 block">
+                        <label class="text-xs text-gold uppercase tracking-wider font-semibold block">Category</label>
+                        <select id="form-product-category" required class="w-full bg-dark-accent border border-gray-700 focus:border-gold focus:outline-none rounded-lg p-2.5 text-sm text-white">
+                            <option value="Momos">Momos</option>
+                            <option value="Noodles">Noodles</option>
+                            <option value="Rolls">Rolls</option>
+                            <option value="Pizza">Pizza</option>
+                            <option value="Mojito">Mojito</option>
+                            <option value="Tea">Tea</option>
+                            <option value="Coffee">Coffee</option>
+                            <option value="Dessert">Dessert</option>
+                            <option value="Petis">Petis</option>
+                            <option value="Fries">Fries</option>
+                            <option value="Sandwich">Sandwich</option>
+                            <option value="Burger">Burger</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1 block">
+                        <label class="text-xs text-gold uppercase tracking-wider font-semibold block">Price (₹)</label>
+                        <input type="number" id="form-product-price" required class="w-full bg-dark-accent border border-gray-700 focus:border-gold focus:outline-none rounded-lg p-2.5 text-sm text-white">
+                    </div>
+                    <div class="space-y-1 block">
+                        <label class="text-xs text-gold uppercase tracking-wider font-semibold block">Dietary Type</label>
+                        <select id="form-product-type" required class="w-full bg-dark-accent border border-gray-700 focus:border-gold focus:outline-none rounded-lg p-2.5 text-sm text-white">
+                            <option value="veg">Veg</option>
+                            <option value="non-veg">Non-Veg</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="space-y-1 block">
+                    <label class="text-xs text-gold uppercase tracking-wider font-semibold block">Option A: Upload Image File (Saves to this Device)</label>
+                    <input type="file" id="form-product-file" accept="image/*" onchange="handleProductImageUpload(event)" class="w-full bg-dark-accent border border-gray-700 focus:border-gold rounded-lg p-2 text-xs text-white">
+                </div>
+
+                <div class="space-y-1 block">
+                    <label class="text-xs text-gold uppercase tracking-wider font-semibold block">Option B: Image URL (Synced on all devices)</label>
+                    <input type="url" id="form-product-img" class="w-full bg-dark-accent border border-gray-700 focus:border-gold focus:outline-none rounded-lg p-2.5 text-sm text-white">
+                </div>
+
+                <div class="space-y-1 block">
+                    <label class="text-xs text-gold uppercase tracking-wider font-semibold block">Description</label>
+                    <textarea id="form-product-desc" rows="3" required class="w-full bg-dark-accent border border-gray-700 focus:border-gold focus:outline-none rounded-lg p-2.5 text-sm text-white"></textarea>
+                </div>
+
+                <div class="flex items-center gap-2 pt-2">
+                    <input type="checkbox" id="form-product-hidden" class="accent-gold w-4 h-4 cursor-pointer">
+                    <label for="form-product-hidden" class="text-xs text-gold uppercase tracking-wider font-semibold cursor-pointer">Hide this dish from Customer Menu</label>
+                </div>
+
+                <div class="pt-4 flex justify-end gap-3 border-t border-gray-800">
+                    <button type="button" onclick="closeProductModal()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-4 py-2 rounded-lg text-sm transition-all">Cancel</button>
+                    <button type="submit" class="bg-gold text-dark-bg font-bold px-5 py-2 rounded-lg text-sm hover:bg-gold-dark transition-all">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SCRIPT SECTION -->
+    <script>
+        const IMGS = {
+            m: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=400&q=80',
+            n: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=400&q=80',
+            r: 'https://images.unsplash.com/photo-1626700051175-6518c4793f4f?w=400&q=80',
+            p: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&q=80',
+            mj: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&q=80',
+            t: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=400&q=80',
+            c: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&q=80',
+            d: 'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=400&q=80',
+            pt: 'https://images.unsplash.com/photo-1601050690597-df056fb49785?w=400&q=80',
+            fr: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&q=80',
+            s: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=400&q=80',
+            b: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80'
+        };
+
+        const DEFAULT_PRODUCTS = [
+            // MOMOS
+            { id: 'm1', name: 'Steam Momos (Half)', category: 'Momos', price: 30, type: 'veg', desc: 'Deliciously soft freshly steamed classic vegetable momos served with spicy chutney.', img: IMGS.m },
+            { id: 'm2', name: 'Steam Momos (Full)', category: 'Momos', price: 60, type: 'veg', desc: 'Deliciously soft freshly steamed classic vegetable momos served with spicy chutney.', img: IMGS.m },
+            { id: 'm3', name: 'Fry Momos (Half)', category: 'Momos', price: 40, type: 'veg', desc: 'Crispy fried golden-brown dumplings packed with seasoned vegetable filling.', img: IMGS.m },
+            { id: 'm4', name: 'Fry Momos (Full)', category: 'Momos', price: 70, type: 'veg', desc: 'Crispy fried golden-brown dumplings packed with seasoned vegetable filling.', img: IMGS.m },
+            { id: 'm5', name: 'Kurkure Momos (Half)', category: 'Momos', price: 40, type: 'veg', desc: 'Super crunchy and crispy outer shell coated momos filled with seasonal vegetables.', img: IMGS.m },
+            { id: 'm6', name: 'Kurkure Momos (Full)', category: 'Momos', price: 80, type: 'veg', desc: 'Super crunchy and crispy outer shell coated momos filled with seasonal vegetables.', img: IMGS.m },
+            { id: 'm7', name: 'Cheese Momos (Half)', category: 'Momos', price: 49, type: 'veg', desc: 'Steamed dumplings loaded with premium melting cheese and vegetable herbs.', img: IMGS.m },
+            { id: 'm8', name: 'Cheese Momos (Full)', category: 'Momos', price: 99, type: 'veg', desc: 'Steamed dumplings loaded with premium melting cheese and vegetable herbs.', img: IMGS.m },
+            { id: 'm9', name: 'Paneer Momos (Half)', category: 'Momos', price: 49, type: 'veg', desc: 'Stuffed with fresh spiced paneer cottage cheese crumble, perfectly steamed.', img: IMGS.m },
+            { id: 'm10', name: 'Paneer Momos (Full)', category: 'Momos', price: 80, type: 'veg', desc: 'Stuffed with fresh spiced paneer cottage cheese crumble, perfectly steamed.', img: IMGS.m },
+            { id: 'm11', name: 'Paneer Fry Momos (Half)', category: 'Momos', price: 59, type: 'veg', desc: 'Crispy fried golden dumplings with rich spiced cottage cheese core.', img: IMGS.m },
+            { id: 'm12', name: 'Paneer Fry Momos (Full)', category: 'Momos', price: 90, type: 'veg', desc: 'Crispy fried golden dumplings with rich spiced cottage cheese core.', img: IMGS.m },
+            { id: 'm13', name: 'Paneer Kurkure Momos (Half)', category: 'Momos', price: 60, type: 'veg', desc: 'Paneer momos with extra crunchy, flaky textured outer crust.', img: IMGS.m },
+            { id: 'm14', name: 'Paneer Kurkure Momos (Full)', category: 'Momos', price: 99, type: 'veg', desc: 'Paneer momos with extra crunchy, flaky textured outer crust.', img: IMGS.m },
+            { id: 'm15', name: 'Paneer Cheese Momos (Half)', category: 'Momos', price: 80, type: 'veg', desc: 'A rich mixture of spiced paneer and melting cheese inside steamed layers.', img: IMGS.m },
+            { id: 'm16', name: 'Paneer Cheese Momos (Full)', category: 'Momos', price: 120, type: 'veg', desc: 'A rich mixture of spiced paneer and melting cheese inside steamed layers.', img: IMGS.m },
+
+            // NOODLES
+            { id: 'n1', name: 'Veg Chaumin (Half)', category: 'Noodles', price: 40, type: 'veg', desc: 'Wok-tossed stir-fried noodles with fresh, crunchy vegetables.', img: IMGS.n },
+            { id: 'n2', name: 'Veg Chaumin (Full)', category: 'Noodles', price: 80, type: 'veg', desc: 'Wok-tossed stir-fried noodles with fresh, crunchy vegetables.', img: IMGS.n },
+            { id: 'n3', name: 'Hakka Noodles (Half)', category: 'Noodles', price: 60, type: 'veg', desc: 'Classic Indo-Chinese style noodles tossed in high flame with savory sauces.', img: IMGS.n },
+            { id: 'n4', name: 'Hakka Noodles (Full)', category: 'Noodles', price: 99, type: 'veg', desc: 'Classic Indo-Chinese style noodles tossed in high flame with savory sauces.', img: IMGS.n },
+            { id: 'n5', name: 'Schezwan Noodles (Half)', category: 'Noodles', price: 60, type: 'veg', desc: 'Spicy noodles wok-tossed in pungent, aromatic Schezwan sauce.', img: IMGS.n },
+            { id: 'n6', name: 'Schezwan Noodles (Full)', category: 'Noodles', price: 99, type: 'veg', desc: 'Spicy noodles wok-tossed in pungent, aromatic Schezwan sauce.', img: IMGS.n },
+            { id: 'n7', name: 'Garlic Noodles (Half)', category: 'Noodles', price: 80, type: 'veg', desc: 'Richly flavored noodles tossed with aromatic minced garlic and seasoning.', img: IMGS.n },
+            { id: 'n8', name: 'Garlic Noodles (Full)', category: 'Noodles', price: 120, type: 'veg', desc: 'Richly flavored noodles tossed with aromatic minced garlic and seasoning.', img: IMGS.n },
+
+            // ROLLS
+            { id: 'r1', name: 'Veggie Roll (Half)', category: 'Rolls', price: 30, type: 'veg', desc: 'Delicious wrap with a seasoned, spiced vegetable mix and crisp salad.', img: IMGS.r },
+            { id: 'r2', name: 'Veggie Roll (Full)', category: 'Rolls', price: 60, type: 'veg', desc: 'Delicious wrap with a seasoned, spiced vegetable mix and crisp salad.', img: IMGS.r },
+            { id: 'r3', name: 'Paneer Roll (Half)', category: 'Rolls', price: 50, type: 'veg', desc: 'Spiced paneer cubes cooked to perfection, wrapped inside a soft flatbread.', img: IMGS.r },
+            { id: 'r4', name: 'Paneer Roll (Full)', category: 'Rolls', price: 80, type: 'veg', desc: 'Spiced paneer cubes cooked to perfection, wrapped inside a soft flatbread.', img: IMGS.r },
+            { id: 'r5', name: 'Cheese Roll (Half)', category: 'Rolls', price: 60, type: 'veg', desc: 'Delectable roll stuffed with fresh veggies, herbs, and loaded cheese.', img: IMGS.r },
+            { id: 'r6', name: 'Cheese Roll (Full)', category: 'Rolls', price: 99, type: 'veg', desc: 'Delectable roll stuffed with fresh veggies, herbs, and loaded cheese.', img: IMGS.r },
+
+            // PIZZA
+            { id: 'p1', name: 'Margherita Pizza', category: 'Pizza', price: 99, type: 'veg', desc: 'Simple perfection with rich Italian marinara, loaded mozzarella and basil.', img: IMGS.p },
+            { id: 'p2', name: 'Onion Pizza', category: 'Pizza', price: 99, type: 'veg', desc: 'Crisp hand-stretched crust topped with fresh sliced red onions and mozzarella.', img: IMGS.p },
+            { id: 'p3', name: 'Paneer Pizza', category: 'Pizza', price: 149, type: 'veg', desc: 'Paneer chunks marinated in spices, laid over pizza base with fresh cheese.', img: IMGS.p },
+            { id: 'p4', name: 'Sweet Corn Pizza', category: 'Pizza', price: 99, type: 'veg', desc: 'Sweet golden corn kernels scattered over hot melting cheesy standard base.', img: IMGS.p },
+            { id: 'p5', name: 'Farmhouse Pizza (Small)', category: 'Pizza', price: 199, type: 'veg', desc: 'Fresh country-side mushrooms, bell peppers, tomatoes, and golden onions.', img: IMGS.p },
+            { id: 'p6', name: 'Farmhouse Pizza (Medium)', category: 'Pizza', price: 299, type: 'veg', desc: 'Fresh country-side mushrooms, bell peppers, tomatoes, and golden onions.', img: IMGS.p },
+
+            // MOJITO
+            { id: 'mj1', name: 'Curacao Mojito', category: 'Mojito', price: 69, type: 'veg', desc: 'Cool blue curacao syrup blended with fresh mint, lime, and sparkling soda.', img: IMGS.mj },
+            { id: 'mj2', name: 'Mint Mojito', category: 'Mojito', price: 69, type: 'veg', desc: 'Traditional classic virgin mojito crushed with lots of lime wedges and mint.', img: IMGS.mj },
+            { id: 'mj3', name: 'Black Currant Mojito', category: 'Mojito', price: 69, type: 'veg', desc: 'A rich tart black currant syrup infusion with crushed mint and cooling fizz.', img: IMGS.mj },
+            { id: 'mj4', name: 'Green Apple Mojito', category: 'Mojito', price: 69, type: 'veg', desc: 'Crisp green apple flavors combined with mint leaves and a splash of lime.', img: IMGS.mj },
+            { id: 'mj5', name: 'Water Melon Mojito', category: 'Mojito', price: 69, type: 'veg', desc: 'Juicy summer watermelons crushed with cooling garden mint and soda water.', img: IMGS.mj },
+            { id: 'mj6', name: 'Mango Mojito', category: 'Mojito', price: 69, type: 'veg', desc: 'Ripe mango sweetness balancing tangy lemon juice and refreshing crushed mint.', img: IMGS.mj },
+            { id: 'mj7', name: 'Red Rose Mojito', category: 'Mojito', price: 69, type: 'veg', desc: 'Delicate aromatic rose syrup muddled with mint leaves, lemon juice, and soda.', img: IMGS.mj },
+            { id: 'mj8', name: 'Strawberry Mojito', category: 'Mojito', price: 69, type: 'veg', desc: 'Sweet luscious strawberries blended with lime juice, fresh mint, and ice.', img: IMGS.mj },
+            { id: 'mj9', name: 'Bubble Gum Mojito', category: 'Mojito', price: 69, type: 'veg', desc: 'Fun nostalgic bubble gum flavored sweet fizz syrup mixed with standard mint and lime.', img: IMGS.mj },
+
+            // TEA
+            { id: 't1', name: 'Normal Tea', category: 'Tea', price: 13, type: 'veg', desc: 'Freshly brewed daily standard milk tea prepared with fresh local ingredients.', img: IMGS.t },
+            { id: 't2', name: 'Lemon Tea', category: 'Tea', price: 19, type: 'veg', desc: 'A refreshing light black tea decoction combined with squeezed lemon juice.', img: IMGS.t },
+            { id: 't3', name: 'Adrak Tea', category: 'Tea', price: 25, type: 'veg', desc: 'Fragrant hot tea cooked with lots of freshly grated ginger root.', img: IMGS.t },
+            { id: 't4', name: 'Kulhad Tea', category: 'Tea', price: 25, type: 'veg', desc: 'Traditional rich tea cooked and served hot in an earthen terracotta clay cup.', img: IMGS.t },
+            { id: 't5', name: 'Elaichi Tea', category: 'Tea', price: 29, type: 'veg', desc: 'Milk tea simmered slowly with highly fragrant, crushed green cardamom pods.', img: IMGS.t },
+
+            // COFFEE
+            { id: 'c1', name: 'Hot Coffee', category: 'Coffee', price: 35, type: 'veg', desc: 'Comforting cup of classically whipped milk and select dark coffee powder.', img: IMGS.c },
+            { id: 'c2', name: 'Chocolate Coffee', category: 'Coffee', price: 45, type: 'veg', desc: 'Robust coffee whipped with premium dark chocolate sauce and sweet warm milk.', img: IMGS.c },
+            { id: 'c3', name: 'Caramel Coffee', category: 'Coffee', price: 45, type: 'veg', desc: 'Warm coffee sweetened with buttery luxury caramel drizzle over creamy base.', img: IMGS.c },
+            { id: 'c4', name: 'Hazelnut Coffee', category: 'Coffee', price: 45, type: 'veg', desc: 'Deliciously aromatic hazelnut syrup infused into standard warm whipped coffee.', img: IMGS.c },
+            { id: 'c5', name: 'Cold Coffee', category: 'Coffee', price: 69, type: 'veg', desc: 'Thick creamy blended cold espresso shake with vanilla hints, served super chilled.', img: IMGS.c },
+            { id: 'c6', name: 'KitKat Cold Coffee', category: 'Coffee', price: 99, type: 'veg', desc: 'Blended cold espresso combined with broken bits of crisp KitKat chocolate.', img: IMGS.c },
+
+            // DESSERT
+            { id: 'd1', name: 'Vanilla Ice Cream', category: 'Dessert', price: 49, type: 'veg', desc: 'Creamy classic single vanilla bean ice cream scoop served in a cup.', img: IMGS.d },
+            { id: 'd2', name: 'Chocolate Ice Cream', category: 'Dessert', price: 49, type: 'veg', desc: 'Deep rich chocolate cocoa solid ice cream served cold in cups.', img: IMGS.d },
+            { id: 'd3', name: 'Coffee Ice Cream', category: 'Dessert', price: 49, type: 'veg', desc: 'Aromatic espresso coffee infused creamy cold scoop ice cream.', img: IMGS.d },
+            { id: 'd4', name: 'Strawberry Ice Cream', category: 'Dessert', price: 49, type: 'veg', desc: 'Sweet strawberry real fruit extract blended creamy sweet dessert scoop.', img: IMGS.d },
+            { id: 'd5', name: 'Mango Ice Cream', category: 'Dessert', price: 49, type: 'veg', desc: 'Tropical alphanso mango milk whipped sweet ice cream scoop.', img: IMGS.d },
+            { id: 'd6', name: 'Butterscotch Ice Cream', category: 'Dessert', price: 49, type: 'veg', desc: 'Classic sweet butterscotch crunch granules folded into creamy vanilla-caramel scoop.', img: IMGS.d },
+            { id: 'd7', name: 'Cold Drink (Can/Bottle)', category: 'Dessert', price: 40, type: 'veg', desc: 'Chilled carbonated soft beverage of your choice.', img: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&q=80' },
+
+            // PETIS
+            { id: 'pt1', name: 'Aloo Petis', category: 'Petis', price: 20, type: 'veg', desc: 'Crispy flaky puff pastry stuffed with traditional spicy mashed potatoes and herbs.', img: IMGS.pt },
+            { id: 'pt2', name: 'Paneer Petis', category: 'Petis', price: 30, type: 'veg', desc: 'Crispy puff layers enclosing premium cubes of lightly spiced fresh paneer.', img: IMGS.pt },
+            { id: 'pt3', name: 'Cheese Petis', category: 'Petis', price: 30, type: 'veg', desc: 'Crispy baked puff pastry overflowing with melting warm salted cheese.', img: IMGS.pt },
+
+            // FRIES
+            { id: 'fr1', name: 'Plain Salted Fries', category: 'Fries', price: 49, type: 'veg', desc: 'Golden crunchy potato finger cut fries sprinkled with fine sea salt.', img: IMGS.fr },
+            { id: 'fr2', name: 'Peri Peri Fries', category: 'Fries', price: 59, type: 'veg', desc: 'Classic golden fries tossed generously in spicy tang peri-peri seasoning.', img: IMGS.fr },
+            { id: 'fr3', name: 'Cheese Fries', category: 'Fries', price: 99, type: 'veg', desc: 'Golden crispy fries loaded with warm cheese sauce and jalepeno toppings.', img: IMGS.fr },
+            { id: 'fr4', name: 'Mayonnaise Fries', category: 'Fries', price: 99, type: 'veg', desc: 'Crunchy hot fries drizzled with sweet garlic and creamy standard white mayo.', img: IMGS.fr },
+            { id: 'fr5', name: 'Cheese Balls', category: 'Fries', price: 60, type: 'veg', desc: 'Golden crust spheres stuffed with dynamic seasoning and liquid melting cheese.', img: IMGS.fr },
+
+            // SANDWICH
+            { id: 's1', name: 'Veggie Sandwich', category: 'Sandwich', price: 89, type: 'veg', desc: 'Grilled bread filled with raw fresh cucumber, tomato, and green chutney.', img: IMGS.s },
+            { id: 's2', name: 'Cheese Sandwich', category: 'Sandwich', price: 119, type: 'veg', desc: 'Golden buttered toast sandwich loaded with melted cheddar and mozzarella cheese.', img: IMGS.s },
+            { id: 's3', name: 'Paneer Sandwich', category: 'Sandwich', price: 119, type: 'veg', desc: 'Fresh marinated and spiced paneer slabs grilled inside toasted bread.', img: IMGS.s },
+            { id: 's4', name: 'Makhani Sandwich', category: 'Sandwich', price: 129, type: 'veg', desc: 'Fusion style sandwich with butter-gravy rich makhani sauce and spiced paneer core.', img: IMGS.s },
+            { id: 's5', name: 'Cheese Garlic Sandwich', category: 'Sandwich', price: 129, type: 'veg', desc: 'Butter garlic smeared bread toasted crisp and loaded with hot bubbling cheese.', img: IMGS.s },
+
+            // BURGER
+            { id: 'b1', name: 'Crispy Veggies Burger', category: 'Burger', price: 45, type: 'veg', desc: 'Crispy fried vegetable patty placed with onion, tomato, and mayo.', img: IMGS.b },
+            { id: 'b2', name: 'Chilli Cheese Burger', category: 'Burger', price: 69, type: 'veg', desc: 'Spicy chili seasoning combined with slice of cheese and vegetable patty.', img: IMGS.b },
+            { id: 'b3', name: 'Paneer King Burger', category: 'Burger', price: 69, type: 'veg', desc: 'Artisanal large thick fried paneer slab patty layered with rich secret sauce.', img: IMGS.b },
+            { id: 'b4', name: 'Makhani Burger', category: 'Burger', price: 99, type: 'veg', desc: 'Vegetable patty drenched in luscious, buttery authentic tandoori makhani gravy.', img: IMGS.b },
+            { id: 'b5', name: 'Extra Loaded Double Tikki Burger', category: 'Burger', price: 110, type: 'veg', desc: 'Giant tall double layer fried vegetable tikki patty loaded with double cheese and sauce.', img: IMGS.b }
+        ];
+
+        let products = [];
+        let cart = [];
+        let selectedCategory = 'All';
+        let currentTable = null;
+        let isAdminView = false;
+        let currentAdminTab = 'menu';
+        let uploadedProductBase64 = '';
+
+        // Read-only central reference
+        const CENTRAL_DB_URL = "https://api.npoint.io/1bb939e0ae95ed417b7d";
+        let masterMenuLoaded = false;
+        let npointProducts = [];
+
+        // Compresses key parameters to keep QR URLs small
+        function minifyProduct(p) {
+            let min = {};
+            if (p.id !== undefined) min.id = String(p.id);
+            if (p.name !== undefined) min.n = p.name;
+            if (p.category !== undefined) min.c = p.category;
+            if (p.price !== undefined) min.p = Number(p.price);
+            if (p.type !== undefined) min.t = p.type;
+            if (p.img !== undefined) {
+                let imgUrl = p.img;
+                if (imgUrl.startsWith("https://images.unsplash.com/")) {
+                    imgUrl = imgUrl.replace("https://images.unsplash.com/", "U:");
+                }
+                min.i = imgUrl;
+            }
+            if (p.desc !== undefined) min.d = p.desc;
+            if (p.hidden !== undefined) min.h = p.hidden ? 1 : 0;
+            return min;
+        }
+
+        function expandProduct(min) {
+            let p = {};
+            if (min.id !== undefined) p.id = String(min.id);
+            if (min.n !== undefined) p.name = min.n;
+            if (min.c !== undefined) p.category = min.c;
+            if (min.p !== undefined) p.price = Number(min.p);
+            if (min.t !== undefined) p.type = min.t;
+            if (min.i !== undefined) {
+                let imgUrl = min.i;
+                if (imgUrl.startsWith("U:")) {
+                    imgUrl = imgUrl.replace("U:", "https://images.unsplash.com/");
+                }
+                p.img = imgUrl;
+            }
+            if (min.d !== undefined) p.desc = min.d;
+            if (min.h !== undefined) p.hidden = min.h === 1;
+            return p;
+        }
+
+        function encodeDelta(deltaObj) {
+            try {
+                return encodeURIComponent(JSON.stringify(deltaObj));
+            } catch (e) {
+                console.error("Delta encoding failure:", e);
+                return "";
+            }
+        }
+
+        function decodeDelta(urlEncodedStr) {
+            try {
+                return JSON.parse(decodeURIComponent(urlEncodedStr));
+            } catch (e) {
+                try {
+                    return JSON.parse(urlEncodedStr);
+                } catch (err) {
+                    console.error("Delta decoding failure:", err);
+                    return null;
+                }
+            }
+        }
+
+        // Global Toast Notification Helper
+        function showToast(message, isSuccess = true) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            const toastIcon = document.getElementById('toast-icon');
+            if (!toast || !toastMsg || !toastIcon) return;
+
+            toastMsg.innerText = message;
+            if (isSuccess) {
+                toast.classList.remove('bg-red-500', 'text-white');
+                toast.classList.add('bg-gold', 'text-dark-bg');
+                toastIcon.className = "fa-solid fa-circle-check";
+            } else {
+                toast.classList.remove('bg-gold', 'text-dark-bg');
+                toast.classList.add('bg-red-500', 'text-white');
+                toastIcon.className = "fa-solid fa-circle-exclamation";
+            }
+
+            toast.classList.remove('translate-y-12', 'opacity-0', 'pointer-events-none');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-12', 'opacity-0', 'pointer-events-none');
+            }, 2500);
+        }
+
+        window.onload = function() {
+            initPWAManifest();
+            initFallingEmojis();
+            fetchMasterMenuAndRender();
+            
+            // Register local PWA service worker via dynamic Blob URL
+            if ('serviceWorker' in navigator) {
+                const swCode = `
+                    const CACHE_NAME = 'amshi-cafe-cache-v1';
+                    const ASSETS = [
+                        '/',
+                        '/index.html',
+                        'https://cdn.tailwindcss.com',
+                        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+                        'https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js'
+                    ];
+                    self.addEventListener('install', e => {
+                        e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)));
+                    });
+                    self.addEventListener('fetch', e => {
+                        e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+                    });
+                `;
+                const blob = new Blob([swCode], {type: 'application/javascript'});
+                navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(err => console.log('SW registration failed:', err));
+            }
+        };
+
+        function initPWAManifest() {
+            try {
+                const manifestObj = {
+                    name: "AMSHI CAFE Premium Ordering",
+                    short_name: "AMSHI CAFE",
+                    description: "Premium QR Ordering for AMSHI CAFE",
+                    start_url: window.location.origin + window.location.pathname,
+                    display: "standalone",
+                    background_color: "#050608",
+                    theme_color: "#C5A880",
+                    icons: [
+                        {
+                            src: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=192&auto=format&fit=crop&q=80",
+                            sizes: "192x192",
+                            type: "image/png"
+                        },
+                        {
+                            src: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=512&auto=format&fit=crop&q=80",
+                            sizes: "512x512",
+                            type: "image/png"
+                        }
+                    ]
+                };
+                const manifestBlob = new Blob([JSON.stringify(manifestObj)], {type: 'application/json'});
+                const manifestUrl = URL.createObjectURL(manifestBlob);
+                document.getElementById('pwa-manifest').setAttribute('href', manifestUrl);
+            } catch (e) {
+                console.error("Manifest initialization error:", e);
+            }
+        }
+
+        function initFallingEmojis() {
+            const emojiContainer = document.getElementById('falling-emojis-bg');
+            if (!emojiContainer) return;
+            emojiContainer.innerHTML = '';
+            const emojis = ['🍕', '🍔', '🍟', '☕', '🥪', '🥟'];
+            for (let i = 0; i < 20; i++) {
+                const el = document.createElement('div');
+                el.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                el.className = 'absolute text-2xl md:text-3xl select-none pointer-events-none transition-all';
+                el.style.left = `${Math.random() * 100}%`;
+                el.style.top = `-${Math.random() * 100 + 50}px`;
+                el.style.opacity = (Math.random() * 0.15 + 0.1).toFixed(2);
+                el.style.animation = `fall-down ${Math.random() * 8 + 8}s linear infinite`;
+                el.style.animationDelay = `${Math.random() * 12}s`;
+                el.style.transform = `scale(${Math.random() * 0.5 + 0.5})`;
+                emojiContainer.appendChild(el);
+            }
+        }
+
+        // Master Menu Fetcher - Read Only API Handler
+        function fetchMasterMenuAndRender() {
+            fetch(CENTRAL_DB_URL)
+            .then(res => {
+                if (res.ok) return res.json();
+                throw new Error("Unable to read public template");
+            })
+            .then(resData => {
+                if (resData && Array.isArray(resData.menu)) {
+                    npointProducts = resData.menu;
+                    masterMenuLoaded = true;
+                } else if (resData && Array.isArray(resData)) {
+                    npointProducts = resData;
+                    masterMenuLoaded = true;
+                }
+            })
+            .catch(err => {
+                console.warn("Using local fallback system first.", err);
+                npointProducts = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+                masterMenuLoaded = false;
+            })
+            .finally(() => {
+                try {
+                    detectTableAndMergeMenu();
+                    loadSystemSettings(); 
+                    renderCategoryTabs();
+                    renderCustomerProducts();
+                    updateCartUI();
+                    generateQrCodesWithRetry(); 
+                } catch (e) {
+                    console.error("Critical rendering blocked:", e);
+                }
+            });
+        }
+
+        function loadSystemSettings() {
+            const wa = localStorage.getItem('amshi_cafe_wa_number') || '6299386787';
+            const qrCount = localStorage.getItem('amshi_cafe_qr_count') || '10';
+            const currency = localStorage.getItem('amshi_cafe_currency') || '₹';
+            const tax = localStorage.getItem('amshi_cafe_tax') || '5';
+            const delivery = localStorage.getItem('amshi_cafe_delivery') || '0';
+            const banner = localStorage.getItem('amshi_cafe_banner_image') || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&auto=format&fit=crop&q=80';
+            const logo = localStorage.getItem('amshi_cafe_logo_url') || '';
+
+            // Populate settings elements
+            const waIn = document.getElementById('admin-wa-number'); if (waIn) waIn.value = wa;
+            const qrIn = document.getElementById('admin-qr-count'); if (qrIn) qrIn.value = qrCount;
+            const curIn = document.getElementById('admin-currency'); if (curIn) curIn.value = currency;
+            const taxIn = document.getElementById('admin-tax'); if (taxIn) taxIn.value = tax;
+            const delIn = document.getElementById('admin-delivery'); if (delIn) delIn.value = delivery;
+            const banIn = document.getElementById('admin-banner-url'); if (banIn) banIn.value = banner;
+            const logoIn = document.getElementById('admin-logo-url-input'); if (logoIn) logoIn.value = logo;
+
+            applyGlobalSettings();
+        }
+
+        function applyGlobalSettings() {
+            const banner = localStorage.getItem('amshi_cafe_banner_image') || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&auto=format&fit=crop&q=80';
+            const heroBg = document.getElementById('hero-background');
+            if (heroBg) {
+                heroBg.style.backgroundImage = `linear-gradient(rgba(5, 6, 8, 0.75), rgba(5, 6, 8, 0.95)), url('${banner}')`;
+            }
+            applyGlobalLogo();
+        }
+
+        function onSettingsChanged() {
+            const wa = document.getElementById('admin-wa-number').value.trim() || '6299386787';
+            const logo = document.getElementById('admin-logo-url-input').value.trim();
+            const banner = document.getElementById('admin-banner-url').value.trim() || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&auto=format&fit=crop&q=80';
+            const currency = document.getElementById('admin-currency').value.trim() || '₹';
+            const tax = parseFloat(document.getElementById('admin-tax').value) || 0;
+            const delivery = parseFloat(document.getElementById('admin-delivery').value) || 0;
+            const qrCount = parseInt(document.getElementById('admin-qr-count').value) || 10;
+
+            localStorage.setItem('amshi_cafe_wa_number', wa);
+            localStorage.setItem('amshi_cafe_logo_url', logo);
+            localStorage.setItem('amshi_cafe_banner_image', banner);
+            localStorage.setItem('amshi_cafe_currency', currency);
+            localStorage.setItem('amshi_cafe_tax', tax);
+            localStorage.setItem('amshi_cafe_delivery', delivery);
+            localStorage.setItem('amshi_cafe_qr_count', qrCount);
+
+            applyGlobalSettings();
+            renderCustomerProducts();
+            updateCartUI();
+            generateQrCodes();
+        }
+
+        function detectTableAndMergeMenu() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                let table = urlParams.get('table');
+                let deltaStr = urlParams.get('delta');
+                let logoUrl = urlParams.get('logo');
+
+                // 1. Sync logo URL if provided
+                if (logoUrl) {
+                    localStorage.setItem('amshi_cafe_logo_url', logoUrl);
+                }
+
+                // 2. Set Table badge
+                const badge = document.getElementById('table-badge');
+                const badgeVal = document.getElementById('table-number-val');
+                const lockBtn = document.getElementById('admin-lock-btn');
+
+                if (table) {
+                    currentTable = parseInt(table);
+                    localStorage.setItem('amshi_cafe_table', currentTable);
+                    
+                    if (badge && badgeVal) {
+                        badge.classList.remove('hidden');
+                        badge.classList.add('flex');
+                        badgeVal.innerText = currentTable;
+                    }
+                    if (lockBtn) lockBtn.classList.add('hidden');
+                } else {
+                    localStorage.removeItem('amshi_cafe_table');
+                    currentTable = null;
+                    if (badge) badge.classList.add('hidden');
+                    if (lockBtn) lockBtn.classList.remove('hidden');
+                }
+
+                // 3. Load Base Products
+                let activeProducts = masterMenuLoaded ? JSON.parse(JSON.stringify(npointProducts)) : JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+
+                // 4. Decode and Merge Delta Parameter changes
+                if (deltaStr) {
+                    const delta = decodeDelta(deltaStr);
+                    if (delta) {
+                        if (Array.isArray(delta.d)) {
+                            activeProducts = activeProducts.filter(p => p && !delta.d.includes(String(p.id)));
+                        }
+                        if (Array.isArray(delta.m)) {
+                            delta.m.forEach(modMin => {
+                                const mod = expandProduct(modMin);
+                                const match = activeProducts.find(p => p && String(p.id) === String(mod.id));
+                                if (match) {
+                                    Object.assign(match, mod);
+                                }
+                            });
+                        }
+                        if (Array.isArray(delta.a)) {
+                            const expandedAdditions = delta.a.map(min => expandProduct(min));
+                            activeProducts = [...expandedAdditions, ...activeProducts];
+                        }
+                        localStorage.setItem('amshi_cafe_products', JSON.stringify(activeProducts));
+                    }
+                } else if (table) {
+                    localStorage.setItem('amshi_cafe_products', JSON.stringify(activeProducts));
+                } else {
+                    const saved = localStorage.getItem('amshi_cafe_products');
+                    if (saved) {
+                        try {
+                            activeProducts = JSON.parse(saved);
+                        } catch (e) {
+                            // keeps defaults
+                        }
+                    }
+                }
+
+                // Clean nulls or invalid entries
+                products = activeProducts.filter(p => p !== null && p !== undefined);
+
+                // Load Cart from LocalStorage
+                const savedCart = localStorage.getItem('amshi_cafe_cart');
+                if (savedCart) {
+                    try {
+                        cart = JSON.parse(savedCart);
+                    } catch (e) {
+                        cart = [];
+                    }
+                }
+            } catch (err) {
+                console.error("Initialization process caught error:", err);
+                products = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+            }
+        }
+
+        // Compiles delta variations against default/master list
+        function compileMenuDelta() {
+            try {
+                const masterBase = masterMenuLoaded ? JSON.parse(JSON.stringify(npointProducts)) : JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+
+                const added = products
+                    .filter(p => p && !masterBase.some(dp => String(dp.id) === String(p.id)))
+                    .map(p => minifyProduct(p));
+                
+                const modified = [];
+
+                products.forEach(p => {
+                    if (!p) return;
+                    const dp = masterBase.find(dep => String(dep.id) === String(p.id));
+                    if (!dp) return;
+                    
+                    let diffObj = {};
+                    let isChanged = false;
+                    
+                    if (p.name !== dp.name) { diffObj.n = p.name; isChanged = true; }
+                    if (Number(p.price) !== Number(dp.price)) { diffObj.p = Number(p.price); isChanged = true; }
+                    if (p.type !== dp.type) { diffObj.t = p.type; isChanged = true; }
+                    if (p.img !== dp.img) { 
+                        let imgUrl = p.img;
+                        if (imgUrl.startsWith("https://images.unsplash.com/")) {
+                            imgUrl = imgUrl.replace("https://images.unsplash.com/", "U:");
+                        }
+                        diffObj.i = imgUrl; 
+                        isChanged = true; 
+                    }
+                    if (p.desc !== dp.desc) { diffObj.d = p.desc; isChanged = true; }
+                    if (p.hidden !== dp.hidden) { diffObj.h = p.hidden ? 1 : 0; isChanged = true; }
+                    
+                    if (isChanged) {
+                        diffObj.id = String(p.id);
+                        modified.push(diffObj);
+                    }
+                });
+
+                const deletedIds = masterBase.filter(dp => dp && !products.some(p => p && String(p.id) === String(dp.id))).map(dp => String(dp.id));
+
+                return {
+                    a: added,
+                    m: modified,
+                    d: deletedIds
+                };
+            } catch (err) {
+                console.error("Delta compilation error:", err);
+                return { a: [], m: [], d: [] };
+            }
+        }
+
+        function getTableLink(tableNum) {
+            const baseUri = window.location.origin + window.location.pathname;
+            const delta = compileMenuDelta();
+            const deltaStr = encodeDelta(delta);
+            const hasModifications = delta.a.length > 0 || delta.m.length > 0 || delta.d.length > 0;
+            const savedLogoUrl = localStorage.getItem('amshi_cafe_logo_url');
+
+            let link = `${baseUri}?table=${tableNum}`;
+            if (hasModifications && deltaStr) {
+                link += `&delta=${encodeURIComponent(deltaStr)}`;
+            }
+            if (savedLogoUrl) {
+                link += `&logo=${encodeURIComponent(savedLogoUrl)}`;
+            }
+            return link;
+        }
+
+        function generateQrCodesWithRetry(retries = 5) {
+            if (typeof QRious !== 'undefined') {
+                generateQrCodes();
+            } else if (retries > 0) {
+                setTimeout(() => generateQrCodesWithRetry(retries - 1), 500);
+            } else {
+                generateQrCodes(); 
+            }
+        }
+
+        function generateQrCodes() {
+            try {
+                const grid = document.getElementById('qr-codes-grid');
+                if (!grid) return;
+                grid.innerHTML = '';
+
+                const qrCount = parseInt(localStorage.getItem('amshi_cafe_qr_count')) || 10;
+
+                for (let i = 1; i <= qrCount; i++) {
+                    const targetLink = getTableLink(i);
+                    let qrImageUri = "";
+                    
+                    if (typeof QRious !== 'undefined') {
+                        const canvas = document.createElement('canvas');
+                        new QRious({
+                            element: canvas,
+                            value: targetLink,
+                            size: 400,
+                            level: 'L'
+                        });
+                        qrImageUri = canvas.toDataURL('image/png');
+                    } else {
+                        qrImageUri = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(targetLink)}`;
+                    }
+
+                    grid.innerHTML += `
+                        <div class="bg-dark-card border border-gold/10 hover:border-gold/30 rounded-2xl p-6 flex flex-col items-center justify-between text-center space-y-4 transition-all shadow-md">
+                            <div>
+                                <span class="text-xs text-gold font-bold uppercase tracking-widest">AMSHI CAFE</span>
+                                <h4 class="font-serif text-lg font-bold text-white mt-1">Table ${i}</h4>
+                            </div>
+                            
+                            <div class="bg-white p-4 rounded-2xl border border-gold/15 shadow-inner">
+                                <img src="${qrImageUri}" alt="Table ${i} QR" class="w-56 h-56 mx-auto object-contain">
+                            </div>
+                            
+                            <div class="text-[9px] text-gray-500 bg-black/40 p-2 rounded-lg w-full overflow-hidden text-ellipsis whitespace-nowrap" title="${targetLink}">
+                                <strong>Link:</strong> ${targetLink}
+                            </div>
+                            
+                            <div class="w-full space-y-2">
+                                <button onclick="copyToClipboard('${targetLink}')" class="w-full bg-dark-accent border border-gray-700 hover:border-gold text-gray-300 hover:text-gold text-xs font-semibold py-2 px-4 rounded-lg transition-all flex items-center justify-center gap-2">
+                                    <i class="fa-regular fa-copy"></i> Copy Link
+                                </button>
+                                <button onclick="printSingleQR(${i})" class="w-full bg-dark-accent border border-gray-700 hover:border-gold text-gray-300 hover:text-gold text-xs font-semibold py-2 px-4 rounded-lg transition-all flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-print"></i> Print QR
+                                </button>
+                                <a href="${qrImageUri}" download="Amshi_Cafe_Table_${i}_QR.png" class="w-full bg-gold hover:bg-gold-dark text-dark-bg text-xs font-bold py-2.5 px-4 rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg shadow-gold/10">
+                                    <i class="fa-solid fa-download"></i> Download QR
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                console.error("QR Code grid rendering stopped:", err);
+            }
+        }
+
+        function printSingleQR(tableNum) {
+            const printWindow = window.open('', '_blank');
+            const targetLink = getTableLink(tableNum);
+            
+            const canvas = document.createElement('canvas');
+            new QRious({
+                element: canvas,
+                value: targetLink,
+                size: 400,
+                level: 'L'
+            });
+            const qrImageUri = canvas.toDataURL('image/png');
+
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Print Table ${tableNum} QR - AMSHI CAFE</title>
+                    <style>
+                        body { font-family: 'Inter', sans-serif; text-align: center; background: white; color: black; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+                        .qr-card { border: 3px double #333; padding: 40px; display: inline-flex; flex-direction: column; align-items: center; border-radius: 15px; }
+                        .qr-title { font-size: 32px; font-weight: bold; margin-bottom: 5px; color: #111; letter-spacing: 3px; }
+                        .qr-subtitle { font-size: 20px; font-weight: 600; margin-bottom: 25px; color: #555; text-transform: uppercase; }
+                        img { width: 300px; height: 300px; }
+                        .footer-text { font-size: 14px; margin-top: 15px; color: #777; font-style: italic; }
+                    </style>
+                </head>
+                <body>
+                    <div class="qr-card">
+                        <div class="qr-title">AMSHI CAFE</div>
+                        <div class="qr-subtitle">TABLE ${tableNum}</div>
+                        <img src="${qrImageUri}">
+                        <div class="footer-text">Scan to View Menu & Place Order</div>
+                    </div>
+                    <script>
+                        window.onload = function() { window.print(); window.close(); }
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+
+        function printAllQRs() {
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Print QR Codes - AMSHI CAFE</title>
+                    <style>
+                        body { font-family: 'Inter', sans-serif; text-align: center; background: white; color: black; margin: 0; padding: 20px; }
+                        .qr-grid { display: grid; grid-template-cols: 1fr 1fr; gap: 40px; }
+                        .qr-card { border: 2px dashed #ccc; padding: 20px; page-break-inside: avoid; display: flex; flex-direction: column; align-items: center; }
+                        .qr-title { font-size: 24px; font-weight: bold; margin-bottom: 5px; color: #111; letter-spacing: 2px; }
+                        .qr-subtitle { font-size: 16px; margin-bottom: 15px; color: #666; }
+                        img { width: 220px; height: 220px; }
+                        .footer-text { font-size: 12px; margin-top: 10px; color: #999; }
+                    </style>
+                </head>
+                <body>
+                    <h1>AMSHI CAFE - Table QR Codes</h1>
+                    <div class="qr-grid">
+            `);
+            
+            const qrCount = parseInt(localStorage.getItem('amshi_cafe_qr_count')) || 10;
+
+            for (let i = 1; i <= qrCount; i++) {
+                const targetLink = getTableLink(i);
+                const canvas = document.createElement('canvas');
+                new QRious({
+                    element: canvas,
+                    value: targetLink,
+                    size: 400,
+                    level: 'L'
+                });
+                const qrImageUri = canvas.toDataURL('image/png');
+                
+                printWindow.document.write(`
+                    <div class="qr-card">
+                        <div class="qr-title">AMSHI CAFE</div>
+                        <div class="qr-subtitle">TABLE ${i}</div>
+                        <img src="${qrImageUri}">
+                        <div class="footer-text">Scan to View Menu & Place Order</div>
+                    </div>
+                `);
+            }
+
+            printWindow.document.write(`
+                    </div>
+                    <script>
+                        window.onload = function() { window.print(); window.close(); }
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+
+        function downloadAllQRs() {
+            const qrCount = parseInt(localStorage.getItem('amshi_cafe_qr_count')) || 10;
+            for (let i = 1; i <= qrCount; i++) {
+                setTimeout(() => {
+                    const link = document.createElement('a');
+                    const canvas = document.createElement('canvas');
+                    const targetLink = getTableLink(i);
+                    new QRious({
+                        element: canvas,
+                        value: targetLink,
+                        size: 400,
+                        level: 'L'
+                    });
+                    link.href = canvas.toDataURL('image/png');
+                    link.download = `AMSHI_CAFE_Table_${i}_QR.png`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }, (i - 1) * 300); // 300ms offset prevents download blocking issues
+            }
+            showToast("Triggered bulk QR downloads");
+        }
+
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 1 * 1024 * 1024) {
+                showToast("Logo must be under 1MB", false);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Data = e.target.result;
+                localStorage.setItem('amshi_cafe_logo_file', base64Data);
+                applyGlobalLogo();
+                showToast("Brand logo uploaded successfully!");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function applyGlobalLogo() {
+            try {
+                const savedLogo = localStorage.getItem('amshi_cafe_logo_file') || localStorage.getItem('amshi_cafe_logo_url');
+                const container = document.getElementById('header-logo-container');
+                if (!container) return;
+
+                if (savedLogo) {
+                    container.innerHTML = `
+                        <img src="${savedLogo}" alt="AMSHI CAFE" class="h-9 md:h-11 object-contain cursor-pointer transition-all hover:scale-105" title="Click to login" onclick="promptAdminLogin()">
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <span id="text-logo" class="font-serif text-lg md:text-xl font-bold tracking-widest text-gold cursor-pointer" title="Click to login" onclick="promptAdminLogin()">
+                            AMSHI CAFE
+                        </span>
+                    `;
+                }
+            } catch (e) {
+                console.error("Logo applying caught error:", e);
+            }
+        }
+
+        function removeLogo() {
+            localStorage.removeItem('amshi_cafe_logo_file');
+            localStorage.removeItem('amshi_cafe_logo_url');
+            
+            const fileInput = document.getElementById('admin-logo-file');
+            const urlInput = document.getElementById('admin-logo-url-input');
+            if (fileInput) fileInput.value = '';
+            if (urlInput) urlInput.value = '';
+
+            applyGlobalLogo();
+            onSettingsChanged();
+            showToast("Reverted to text logo");
+        }
+
+        function resetSystemToDefault() {
+            if (confirm("Are you sure you want to completely reset all settings, custom products, and local changes? This cannot be undone!")) {
+                localStorage.clear();
+                products = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+                cart = [];
+                localStorage.setItem('amshi_cafe_products', JSON.stringify(products));
+                
+                // Clear input values
+                document.getElementById('admin-wa-number').value = '6299386787';
+                document.getElementById('admin-qr-count').value = '10';
+                document.getElementById('admin-currency').value = '₹';
+                document.getElementById('admin-tax').value = '5';
+                document.getElementById('admin-delivery').value = '0';
+                document.getElementById('admin-banner-url').value = '';
+                document.getElementById('admin-logo-url-input').value = '';
+                
+                onSettingsChanged();
+                showToast("System completely reset to defaults", true);
+            }
+        }
+
+        function promptAdminLogin() {
+            const pass = prompt("Enter Password to Access Control Panel:");
+            if (pass === "amshi123") {
+                showToast("Admin authenticated");
+                isAdminView = false; 
+                toggleAdminView();  
+            } else if (pass !== null) {
+                showToast("Invalid Credentials", false);
+            }
+        }
+
+        function adminLogout() {
+            if (confirm("Are you sure you want to exit the admin console?")) {
+                const pnlBtn = document.getElementById('admin-panel-btn');
+                if (pnlBtn) pnlBtn.classList.add('hidden');
+                
+                const lockBtn = document.getElementById('admin-lock-btn');
+                if (lockBtn) lockBtn.classList.remove('hidden');
+                
+                if (isAdminView) {
+                    toggleAdminView();
+                }
+                showToast("Logged out successfully");
+            }
+        }
+
+        function renderCategoryTabs() {
+            try {
+                const categories = ['Momos', 'Noodles', 'Rolls', 'Pizza', 'Mojito', 'Tea', 'Coffee', 'Dessert', 'Petis', 'Fries', 'Sandwich', 'Burger'];
+                const container = document.getElementById('category-tabs');
+                if (!container) return;
+                container.innerHTML = '';
+                
+                categories.forEach(cat => {
+                    container.innerHTML += `
+                        <button onclick="selectCategory('${cat}')" class="category-tab flex-shrink-0 border border-gold/15 hover:border-gold/50 text-gray-300 hover:text-gold px-5 py-2 rounded-full text-xs tracking-wider uppercase transition-all duration-300 hover:shadow-[0_0_10px_rgba(197,168,128,0.15)]">
+                            ${cat}
+                        </button>
+                    `;
+                });
+            } catch (err) {
+                console.error("Category tab loading failed:", err);
+            }
+        }
+
+        function selectCategory(cat) {
+            selectedCategory = cat;
+            const allTabs = document.querySelectorAll('.category-tab');
+            allTabs.forEach(tab => {
+                if (tab.innerText.trim().toLowerCase() === cat.toLowerCase() || (cat === 'All' && tab.innerText.trim().toLowerCase() === 'all items')) {
+                    tab.classList.add('bg-gold', 'text-dark-bg', 'font-extrabold', 'shadow-[0_0_15px_rgba(197,168,128,0.3)]');
+                    tab.classList.remove('border', 'border-gold/15', 'text-gray-300');
+                } else {
+                    tab.classList.remove('bg-gold', 'text-dark-bg', 'font-extrabold', 'shadow-[0_0_15px_rgba(197,168,128,0.3)]');
+                    tab.classList.add('border', 'border-gold/15', 'text-gray-300');
+                }
+            });
+            filterProducts();
+        }
+
+        function filterProducts() {
+            try {
+                const searchQuery = document.getElementById('search-input').value.toLowerCase();
+                const grid = document.getElementById('products-grid');
+                const emptyState = document.getElementById('empty-search');
+                if (!grid || !emptyState) return;
+                
+                let filtered = products.filter(p => {
+                    if (!p || p.hidden) return false;
+                    const matchesCategory = (selectedCategory === 'All' || p.category === selectedCategory);
+                    const matchesSearch = p.name.toLowerCase().includes(searchQuery) || 
+                                          p.desc.toLowerCase().includes(searchQuery) || 
+                                          p.category.toLowerCase().includes(searchQuery);
+                    return matchesCategory && matchesSearch;
+                });
+
+                if (filtered.length === 0) {
+                    grid.classList.add('hidden');
+                    emptyState.classList.remove('hidden');
+                } else {
+                    grid.classList.remove('hidden');
+                    emptyState.classList.add('hidden');
+                    renderCustomerProducts(filtered);
+                }
+            } catch (err) {
+                console.error("Searching/Filtering process hit error:", err);
+            }
+        }
+
+        function renderCustomerProducts(productsList = products) {
+            try {
+                const grid = document.getElementById('products-grid');
+                if (!grid) return;
+                grid.innerHTML = '';
+
+                const currency = localStorage.getItem('amshi_cafe_currency') || '₹';
+
+                let listToRender = productsList;
+                if (productsList === products) {
+                    listToRender = products.filter(p => p && !p.hidden);
+                    if (selectedCategory !== 'All') {
+                        listToRender = listToRender.filter(p => p.category === selectedCategory);
+                    }
+                }
+
+                listToRender.forEach(p => {
+                    if (!p) return;
+                    const cartItem = cart.find(item => item && String(item.id) === String(p.id));
+                    const qty = cartItem ? cartItem.quantity : 0;
+                    
+                    const badgeMarkup = p.type === 'veg' 
+                        ? `<div class="flex items-center gap-1.5 border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 rounded text-[10px] text-emerald-400 font-bold uppercase tracking-wider">
+                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Veg
+                           </div>`
+                        : `<div class="flex items-center gap-1.5 border border-red-500/30 bg-red-500/10 px-2.5 py-0.5 rounded text-[10px] text-red-400 font-bold uppercase tracking-wider">
+                             <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Non-Veg
+                           </div>`;
+
+                    const actionButtonMarkup = qty > 0 
+                        ? `<div class="flex items-center bg-gold rounded-xl p-1 text-dark-bg font-bold shadow-md animate-scale">
+                             <button onclick="updateCartQuantity('${p.id}', -1)" class="w-8 h-8 flex items-center justify-center hover:bg-gold-dark/20 rounded-lg transition-all active:scale-95"><i class="fa-solid fa-minus"></i></button>
+                             <span class="w-8 text-center text-sm">${qty}</span>
+                             <button onclick="updateCartQuantity('${p.id}', 1)" class="w-8 h-8 flex items-center justify-center hover:bg-gold-dark/20 rounded-lg transition-all active:scale-95"><i class="fa-solid fa-plus"></i></button>
+                           </div>`
+                        : `<button onclick="addToCart('${p.id}')" class="w-full bg-dark-accent border border-gold/10 hover:border-gold hover:bg-gold hover:text-dark-bg text-gold font-bold py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 shadow-[0_4px_15px_rgba(0,0,0,0.3)] hover:shadow-[0_0_15px_rgba(197,168,128,0.2)] active:scale-95 active:translate-y-0.5">
+                             <i class="fa-solid fa-plus text-[10px]"></i> Add to Cart
+                           </button>`;
+
+                    grid.innerHTML += `
+                        <div class="fade-in card-3d bg-dark-card border border-gold/5 hover:border-gold/30 rounded-2xl overflow-hidden group flex flex-col justify-between shadow-lg transform duration-500">
+                            <div class="relative overflow-hidden h-52 md:h-56 bg-dark-accent">
+                                <img src="${p.img || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80'}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100" loading="lazy">
+                                <div class="absolute inset-0 bg-gradient-to-t from-dark-card via-transparent to-transparent"></div>
+                                <div class="absolute top-4 right-4 z-10">${badgeMarkup}</div>
+                            </div>
+                            
+                            <div class="p-5 flex-grow flex flex-col justify-between gap-5 bg-gradient-to-b from-dark-card to-dark-accent/40">
+                                <div class="space-y-2" style="transform: translateZ(20px);">
+                                    <div class="flex justify-between items-start gap-2">
+                                        <h3 class="font-serif text-lg font-bold text-white group-hover:text-gold transition-colors duration-300">${p.name}</h3>
+                                        <span class="font-bold text-gold text-lg">${currency}${p.price}</span>
+                                    </div>
+                                    <p class="text-xs text-gray-400 leading-relaxed line-clamp-2">${p.desc}</p>
+                                </div>
+                                <div class="pt-1" style="transform: translateZ(30px);">${actionButtonMarkup}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (err) {
+                console.error("Main customers grid render failed:", err);
+            }
+        }
+
+        function addToCart(productId) {
+            try {
+                const prod = products.find(p => p && String(p.id) === String(productId));
+                if (!prod) {
+                    showToast("Dish not found", false);
+                    return;
+                }
+
+                const existing = cart.find(item => item && String(item.id) === String(productId));
+                if (existing) {
+                    existing.quantity += 1;
+                } else {
+                    cart.push({ ...prod, quantity: 1 });
+                }
+                
+                showToast(`Added ${prod.name} to basket`);
+                updateCartUI();
+                renderCustomerProducts();
+            } catch (err) {
+                console.error("Error adding to basket:", err);
+            }
+        }
+
+        function updateCartQuantity(productId, change) {
+            try {
+                const item = cart.find(item => item && String(item.id) === String(productId));
+                if (!item) return;
+
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    cart = cart.filter(i => i && String(i.id) !== String(productId));
+                    showToast(`Item removed`);
+                }
+                
+                updateCartUI();
+                renderCustomerProducts();
+            } catch (err) {
+                console.error("Cart quantity update failure:", err);
+            }
+        }
+
+        function updateCartUI() {
+            try {
+                const cartItemsContainer = document.getElementById('cart-items-container');
+                const cartBadgeCount = document.getElementById('cart-badge-count');
+                const cartFloatTotal = document.getElementById('cart-float-total');
+                const cartBaseTotal = document.getElementById('cart-base-total');
+                const cartTaxTotal = document.getElementById('cart-tax-total');
+                const cartGrandTotal = document.getElementById('cart-grand-total');
+                const floatingCart = document.getElementById('floating-cart');
+
+                if (!cartItemsContainer || !floatingCart) return;
+
+                // Sync Cart state in LocalStorage
+                localStorage.setItem('amshi_cafe_cart', JSON.stringify(cart));
+
+                if (cart.length === 0) {
+                    floatingCart.classList.add('scale-0');
+                    floatingCart.classList.remove('scale-100');
+                    
+                    cartItemsContainer.innerHTML = `
+                        <div class="flex flex-col items-center justify-center py-20 text-center space-y-4">
+                            <i class="fa-solid fa-basket-shopping text-gold/20 text-6xl"></i>
+                            <p class="text-gray-400 text-sm font-medium">Your basket is empty</p>
+                        </div>
+                    `;
+                    
+                    if (cartBadgeCount) cartBadgeCount.innerText = '0';
+                    if (cartFloatTotal) cartFloatTotal.innerText = '₹0';
+                    if (cartBaseTotal) cartBaseTotal.innerText = '₹0';
+                    if (cartTaxTotal) cartTaxTotal.innerText = '₹0';
+                    if (cartGrandTotal) cartGrandTotal.innerText = '₹0';
+                    return;
+                }
+
+                floatingCart.classList.remove('scale-0');
+                floatingCart.classList.add('scale-100');
+
+                cartItemsContainer.innerHTML = '';
+                let total = 0;
+                let totalItems = 0;
+
+                const currency = localStorage.getItem('amshi_cafe_currency') || '₹';
+                const taxPercentage = parseFloat(localStorage.getItem('amshi_cafe_tax')) || 5;
+                const deliveryCharge = parseFloat(localStorage.getItem('amshi_cafe_delivery')) || 0;
+
+                cart.forEach(item => {
+                    if (!item) return;
+                    total += item.price * item.quantity;
+                    totalItems += item.quantity;
+
+                    cartItemsContainer.innerHTML += `
+                        <div class="flex gap-4 bg-dark-accent/50 p-3 rounded-xl border border-gray-800 hover:border-gold/10 transition-all">
+                            <img src="${item.img || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80'}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg bg-dark-accent">
+                            <div class="flex-grow flex flex-col justify-between">
+                                <div>
+                                    <div class="flex justify-between items-start gap-1">
+                                        <h4 class="text-xs font-semibold text-white line-clamp-1">${item.name}</h4>
+                                        <span class="text-xs font-bold text-gold">${currency}${item.price * item.quantity}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between mt-2">
+                                    <span class="text-[10px] uppercase text-gray-500 tracking-wider">Quantity</span>
+                                    <div class="flex items-center bg-dark-accent border border-gray-700 rounded-lg p-0.5 text-white">
+                                        <button onclick="updateCartQuantity('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center hover:bg-white/5 rounded text-xs transition-all"><i class="fa-solid fa-minus text-gray-400"></i></button>
+                                        <span class="w-6 text-center text-xs font-bold">${item.quantity}</span>
+                                        <button onclick="updateCartQuantity('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center hover:bg-white/5 rounded text-xs transition-all"><i class="fa-solid fa-plus text-gray-400"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                const taxAmount = total * (taxPercentage / 100);
+                const grandTotal = total + taxAmount + deliveryCharge;
+
+                if (cartBadgeCount) cartBadgeCount.innerText = totalItems;
+                if (cartFloatTotal) cartFloatTotal.innerText = `${currency}${grandTotal.toFixed(2)}`;
+                if (cartBaseTotal) cartBaseTotal.innerText = `${currency}${total.toFixed(2)}`;
+                if (cartTaxTotal) cartTaxTotal.innerText = `${currency}${taxAmount.toFixed(2)} (${taxPercentage}%)`;
+                
+                const deliveryRow = document.getElementById('cart-delivery-row');
+                const deliveryTotal = document.getElementById('cart-delivery-total');
+                if (deliveryCharge > 0) {
+                    if (deliveryRow) deliveryRow.classList.remove('hidden');
+                    if (deliveryTotal) deliveryTotal.innerText = `${currency}${deliveryCharge.toFixed(2)}`;
+                } else {
+                    if (deliveryRow) deliveryRow.classList.add('hidden');
+                }
+                if (cartGrandTotal) cartGrandTotal.innerText = `${currency}${grandTotal.toFixed(2)}`;
+            } catch (err) {
+                console.error("Cart DOM layout mapping failed:", err);
+            }
+        }
+
+        function toggleCartDrawer(open) {
+            const overlay = document.getElementById('cart-drawer-overlay');
+            const drawer = document.getElementById('cart-drawer');
+            if (!overlay || !drawer) return;
+
+            if (open) {
+                overlay.classList.remove('opacity-0', 'pointer-events-none');
+                drawer.classList.remove('translate-x-full');
+            } else {
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+                drawer.classList.add('translate-x-full');
+            }
+        }
+
+        function getFormattedDateTime() {
+            const now = new Date();
+            
+            // Format Date: DD/MM/YYYY
+            const dd = String(now.getDate()).padStart(2, '0');
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const yyyy = now.getFullYear();
+            const dateStr = `${dd}/${mm}/${yyyy}`;
+            
+            // Format Time: HH:MM AM/PM
+            let hours = now.getHours();
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; 
+            const timeStr = `${String(hours).padStart(2, '0')}:${minutes} ${ampm}`;
+            
+            return { dateStr, timeStr };
+        }
+
+        function sendOrderViaWhatsApp() {
+            try {
+                if (cart.length === 0) return;
+
+                const { dateStr, timeStr } = getFormattedDateTime();
+                const currentTable = localStorage.getItem('amshi_cafe_table');
+                const currency = localStorage.getItem('amshi_cafe_currency') || '₹';
+                const taxPercentage = parseFloat(localStorage.getItem('amshi_cafe_tax')) || 5;
+                const deliveryCharge = parseFloat(localStorage.getItem('amshi_cafe_delivery')) || 0;
+
+                let subtotal = 0;
+                let itemsText = '';
+
+                cart.forEach(item => {
+                    if (!item) return;
+                    const sub = item.price * item.quantity;
+                    subtotal += sub;
+                    itemsText += `${item.name} x ${item.quantity} = ${currency}${sub}\n`;
+                });
+
+                const taxAmount = subtotal * (taxPercentage / 100);
+                const grandTotal = subtotal + taxAmount + deliveryCharge;
+
+                let orderText = `🍽️ *NEW ORDER*\n\n`;
+                orderText += `*Restaurant :* Amshi Cafe\n\n`;
+                
+                if (currentTable) {
+                    orderText += `*Table No :* ${currentTable}\n\n`;
+                } else {
+                    orderText += `*Table No :* Not Specified (Takeaway)\n\n`;
+                }
+
+                orderText += `*Items:*\n${itemsText}\n`;
+                orderText += `*Subtotal =* ${currency}${subtotal.toFixed(2)}\n`;
+                orderText += `*Tax =* ${currency}${taxAmount.toFixed(2)}\n`;
+                if (deliveryCharge > 0) {
+                    orderText += `*Delivery =* ${currency}${deliveryCharge.toFixed(2)}\n`;
+                }
+                orderText += `*Grand Total =* ${currency}${grandTotal.toFixed(2)}\n\n`;
+                orderText += `*Date =* ${dateStr}\n`;
+                orderText += `*Time =* ${timeStr}\n\n`;
+                orderText += `Thank You ❤️`;
+
+                const savedWa = localStorage.getItem('amshi_cafe_wa_number') || '6299386787';
+                let cleanNumber = savedWa.trim().replace(/\D/g, '');
+                if (cleanNumber.length === 10) {
+                    cleanNumber = '91' + cleanNumber;
+                }
+
+                const encodedText = encodeURIComponent(orderText);
+                const whatsappUrl = `https://wa.me/${cleanNumber}?text=${encodedText}`;
+                
+                window.open(whatsappUrl, '_blank');
+            } catch (err) {
+                console.error("WhatsApp formatting failed:", err);
+            }
+        }
+
+        function toggleAdminView() {
+            isAdminView = !isAdminView;
+            
+            const customerView = document.getElementById('customer-view');
+            const adminView = document.getElementById('admin-view');
+            const floatingCart = document.getElementById('floating-cart');
+
+            if (isAdminView) {
+                if (customerView) customerView.classList.add('hidden');
+                if (adminView) adminView.classList.remove('hidden');
+                if (floatingCart) floatingCart.classList.add('scale-0');
+                renderAdminProducts();
+                applyGlobalLogo(); 
+            } else {
+                if (customerView) customerView.classList.remove('hidden');
+                if (adminView) adminView.classList.add('hidden');
+                if (floatingCart && cart.length > 0) {
+                    floatingCart.classList.remove('scale-0');
+                }
+                renderCustomerProducts();
+            }
+        }
+
+        function switchAdminTab(tabName) {
+            currentAdminTab = tabName;
+            const menuTab = document.getElementById('admin-menu-tab');
+            const qrTab = document.getElementById('admin-qr-tab');
+            const btnMenu = document.getElementById('btn-admin-menu');
+            const btnQr = document.getElementById('btn-admin-qr');
+
+            if (!menuTab || !qrTab || !btnMenu || !btnQr) return;
+
+            if (tabName === 'menu') {
+                menuTab.classList.remove('hidden');
+                qrTab.classList.add('hidden');
+                btnMenu.className = "admin-tab active border-b-2 border-gold text-gold font-semibold px-6 py-3 text-sm tracking-wide";
+                btnQr.className = "admin-tab border-b-2 border-transparent text-gray-400 hover:text-white px-6 py-3 text-sm tracking-wide transition-all";
+                renderAdminProducts();
+            } else {
+                menuTab.classList.add('hidden');
+                qrTab.classList.remove('hidden');
+                btnQr.className = "admin-tab active border-b-2 border-gold text-gold font-semibold px-6 py-3 text-sm tracking-wide";
+                btnMenu.className = "admin-tab border-b-2 border-transparent text-gray-400 hover:text-white px-6 py-3 text-sm tracking-wide transition-all";
+                generateQrCodes(); 
+            }
+        }
+
+        function renderAdminProducts() {
+            try {
+                const tbody = document.getElementById('admin-table-body');
+                if (!tbody) return;
+                tbody.innerHTML = '';
+
+                const currency = localStorage.getItem('amshi_cafe_currency') || '₹';
+
+                products.forEach(p => {
+                    if (!p) return;
+                    const badgeClass = p.type === 'veg' 
+                        ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400' 
+                        : 'border-red-500/30 bg-red-500/10 text-red-400';
+
+                    const visibilityBadge = p.hidden 
+                        ? `<span class="inline-block border border-yellow-500/30 bg-yellow-500/10 text-yellow-400 px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Hidden</span>`
+                        : `<span class="inline-block border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Visible</span>`;
+
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-dark-accent/40 transition-colors">
+                            <td class="p-4 flex items-center gap-3">
+                                <img src="${p.img || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80'}" alt="${p.name}" class="w-12 h-12 object-cover rounded-lg bg-dark-accent">
+                                <div>
+                                    <h4 class="font-semibold text-white">${p.name}</h4>
+                                    <p class="text-xs text-gray-500 line-clamp-1 max-w-[280px]">${p.desc}</p>
+                                </div>
+                            </td>
+                            <td class="p-4 text-xs font-semibold text-gray-400">${p.category}</td>
+                            <td class="p-4">
+                                <div class="flex flex-col gap-1.5 items-start">
+                                    <span class="inline-block border px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${badgeClass}">
+                                        ${p.type}
+                                    </span>
+                                    ${visibilityBadge}
+                                </div>
+                            </td>
+                            <td class="p-4 font-bold text-white text-right">${currency}${p.price}</td>
+                            <td class="p-4 text-center">
+                                <div class="flex items-center justify-center gap-2">
+                                    <button onclick="openProductModal('${p.id}')" class="p-2 text-gold hover:bg-gold/10 rounded-lg transition-all" title="Edit Price & Details">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button onclick="deleteProduct('${p.id}')" class="p-2 text-red-400 hover:bg-red-500/10 rounded-lg transition-all" title="Delete">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.error("Admin products table failed to map:", err);
+            }
+        }
+
+        function deleteProduct(productId) {
+            if (confirm("Are you sure you want to remove this dish?")) {
+                products = products.filter(p => p && String(p.id) !== String(productId));
+                localStorage.setItem('amshi_cafe_products', JSON.stringify(products));
+                renderAdminProducts();
+                generateQrCodes(); 
+                showToast("Product deleted successfully");
+            }
+        }
+
+        function openProductModal(productId = null) {
+            const modalOverlay = document.getElementById('product-modal-overlay');
+            const form = document.getElementById('product-form');
+            const title = document.getElementById('modal-title');
+            
+            if (!modalOverlay || !form || !title) return;
+            form.reset();
+            uploadedProductBase64 = '';
+
+            if (productId) {
+                title.innerText = "Edit Price & Details";
+                const p = products.find(prod => prod && String(prod.id) === String(productId));
+                if (p) {
+                    document.getElementById('form-product-id').value = p.id;
+                    document.getElementById('form-product-name').value = p.name;
+                    document.getElementById('form-product-category').value = p.category;
+                    document.getElementById('form-product-price').value = p.price;
+                    document.getElementById('form-product-type').value = p.type;
+                    document.getElementById('form-product-img').value = p.img || '';
+                    document.getElementById('form-product-desc').value = p.desc;
+                    document.getElementById('form-product-hidden').checked = p.hidden || false;
+                }
+            } else {
+                title.innerText = "Add Gourmet Dish";
+                document.getElementById('form-product-id').value = '';
+                document.getElementById('form-product-hidden').checked = false;
+            }
+
+            modalOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            const pModal = document.getElementById('product-modal');
+            if (pModal) pModal.classList.remove('scale-95');
+        }
+
+        function closeProductModal() {
+            const modalOverlay = document.getElementById('product-modal-overlay');
+            const pModal = document.getElementById('product-modal');
+            if (modalOverlay) modalOverlay.classList.add('opacity-0', 'pointer-events-none');
+            if (pModal) pModal.classList.add('scale-95');
+        }
+
+        function handleProductImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 800 * 1024) {
+                showToast("Image must be under 800KB", false);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                uploadedProductBase64 = e.target.result;
+                document.getElementById('form-product-img').value = ''; 
+                showToast("Image loaded");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleProductFormSubmit(event) {
+            event.preventDefault();
+            
+            const id = document.getElementById('form-product-id').value;
+            const name = document.getElementById('form-product-name').value;
+            const category = document.getElementById('form-product-category').value;
+            const price = parseFloat(document.getElementById('form-product-price').value) || 0;
+            const type = document.getElementById('form-product-type').value;
+            const imgUrlInput = document.getElementById('form-product-img').value.trim();
+            const desc = document.getElementById('form-product-desc').value;
+            const hidden = document.getElementById('form-product-hidden').checked;
+
+            const img = uploadedProductBase64 || imgUrlInput || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80';
+            uploadedProductBase64 = ''; 
+
+            if (id) {
+                const index = products.findIndex(p => p && String(p.id) === String(id));
+                if (index !== -1) {
+                    products[index] = { id, name, category, price, type, img, desc, hidden };
+                    showToast("Dish modified successfully");
+                }
+            } else {
+                const newId = Date.now().toString();
+                products.unshift({ id: newId, name, category, price, type, img, desc, hidden });
+                showToast("Dish added successfully");
+            }
+
+            localStorage.setItem('amshi_cafe_products', JSON.stringify(products));
+            closeProductModal();
+            renderAdminProducts();
+            generateQrCodes();
+            renderCustomerProducts();
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast("URL copied successfully");
+            }).catch(err => {
+                showToast("Failed to copy link", false);
+            });
+        }
+    </script>
+</body>
+</html>
